@@ -100,10 +100,11 @@ class TaskController extends Controller
      */
     public function destroy(DeleteTaskRequest $request, Task $task)
     {
-        if ($task->user_id === auth()->user()->id) {
+        if ($task->user_id === auth()->user()->id && auth()->user()->hasRole('user')) {
             $task->delete();
-            return Redirect::route('tasks.index', $task)->with('status', 'data-deleted');
+        } else {
+            $task->delete();
         }
-        return Redirect::route('tasks.index', $task)->with('error', 'data-deleted');
+        return Redirect::route('tasks.index', $task)->with('status', 'data-deleted');
     }
 }
